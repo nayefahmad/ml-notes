@@ -4,7 +4,6 @@
 
 # This demo shows how to use a pretrained PyTorch model to predict the class
 # to which an image belongs.
-# test
 
 
 # Reference:
@@ -61,6 +60,11 @@ img_tensor[:, 0, 0].size()
 img_tensor[0, :, 0].size()
 img_tensor[0, 0, :].size()
 
+
+# todo: how to show RGB?
+for channel in range(3):
+    plt.imshow(img_tensor[channel, :, :])
+    plt.show()
 
 # ## Model
 
