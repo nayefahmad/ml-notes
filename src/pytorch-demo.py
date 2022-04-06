@@ -4,6 +4,7 @@
 
 # This demo shows how to use a pretrained PyTorch model to predict the class
 # to which an image belongs.
+# test
 
 
 # Reference:
