@@ -62,6 +62,7 @@ img_tensor[0, 0, :].size()
 
 
 # todo: how to show RGB?
+# todo
 for channel in range(3):
     plt.imshow(img_tensor[channel, :, :])
     plt.show()
