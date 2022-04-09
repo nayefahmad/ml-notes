@@ -115,3 +115,6 @@ y_max, index = torch.max(y, 1)
 print(index, y_max)
 
 # What does class with index 967 represent? Let's find out.
+
+url = "https://pytorch.tips/imagenet-labels"
+fpath = "dst/imagenet_class_labels.txt"
