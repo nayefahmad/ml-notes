@@ -16,15 +16,19 @@ import torch
 from torchvision import models, transforms
 import matplotlib.pyplot as plt
 from PIL import Image
+from pathlib import Path
 
 from IPython.core.interactiveshell import InteractiveShell
 
 InteractiveShell.ast_node_interactivity = "all"
 
+proj_path_string = r"C:/Nayef/ml-notes"  # os.path.dirname(__file__) doesn't work in Python Console or Jupyter # noqa
+proj_path = Path(proj_path_string)
+
 # ## Image to classify
 
 url = "https://pytorch.tips/coffee"
-fpath = "data/coffee.jpg"
+fpath = proj_path.joinpath("data/coffee.jpg").as_posix()
 
 re_download_image = False
 if re_download_image:
@@ -74,8 +78,10 @@ img_tensor[0, 0, :].shape
 # Showing the three colour channels:
 
 fig = plt.figure()
+plot_rows = 3
+plot_cols = 1
 for channel_num, cmap in enumerate(["Reds", "Greens", "Blues"]):
-    ax = plt.subplot(3, 1, channel_num + 1)
+    ax = plt.subplot(plot_rows, plot_cols, channel_num + 1)
     plt.imshow(img_tensor[channel_num, :, :], cmap=cmap)
 fig.show()
 
@@ -98,8 +104,8 @@ print(model)
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(device)
 
-# Set the module in evaluation mode. This has any effect only on
-# certain modules.
+# Set the model in evaluation mode. This has an effect only on
+# certain components of the model.
 
 model.eval()
 model.to(device)
