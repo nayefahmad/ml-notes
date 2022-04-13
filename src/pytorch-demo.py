@@ -123,4 +123,13 @@ print(index, y_max)
 # What does class with index 967 represent? Let's find out.
 
 url = "https://pytorch.tips/imagenet-labels"
-fpath = "dst/imagenet_class_labels.txt"
+fpath = proj_path.joinpath("data/imagenet_class_labels.txt").as_posix()
+
+re_download_file = False
+if re_download_file:
+    urllib.request.urlretrieve(url, fpath)
+
+with open(fpath) as f:
+    classes = [line.strip() for line in f.readlines()]
+
+print(classes[index.item()])
