@@ -115,7 +115,7 @@ print(y.shape)
 # First dimension has size 1 because there's only one image.
 # Second dimension has size 1000 because there are 1000 classes.
 
-# Finding winning class:
+# Finding most-likely class:
 
 y_max, index = torch.max(y, 1)
 print(index, y_max)
