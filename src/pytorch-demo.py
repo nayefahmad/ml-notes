@@ -60,6 +60,8 @@ transform = transforms.Compose(
     ]
 )
 
+# Applying the pipeline:
+
 img_tensor = transform(img)
 
 img_tensor.dim()  # Rank 3 tensor
@@ -96,7 +98,7 @@ batch.dim()  # Rank 4 tensor
 batch.shape
 
 
-# ## Model
+# ## Model setup
 
 model = models.alexnet(pretrained=True)
 print(model)
@@ -109,6 +111,9 @@ print(device)
 
 model.eval()
 model.to(device)
+
+# ## Passing data to the model
+
 y = model(batch.to(device))
 print(y.shape)
 
@@ -133,3 +138,26 @@ with open(fpath) as f:
     classes = [line.strip() for line in f.readlines()]
 
 print(classes[index.item()])
+
+# Extracting probabilities
+
+probs_nonflat = torch.nn.functional.softmax(y, dim=1)
+probs = probs_nonflat[0]
+
+print(f"Most likely class is {classes[index.item()]}")
+print(
+    f"Probability of this class is "
+    f"{round(probs[index.item()].item() * 100, 2)}"  # noqa
+)
+
+
+# ## Extracting top 5 most likely classes
+
+_, indices_nonflat = torch.sort(y, descending=True)
+indices = indices_nonflat[0]
+
+for i in indices[:5]:
+    print(f"class: {classes[i]} ; prob: {round(probs[i].item() *100, 2)}")
+
+
+# ## Trying out other images
