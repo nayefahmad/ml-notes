@@ -250,6 +250,7 @@ def make_classification(
 
 if __name__ == "__main__":
     num_samples = 100
+    num_classes = 2
     num_features = 3
     n_informative = 2
     n_repeated = 0
@@ -257,6 +258,7 @@ if __name__ == "__main__":
 
     X, y = make_classification(
         n_samples=num_samples,
+        n_classes=num_classes,
         n_features=num_features,
         n_informative=n_informative,
         n_redundant=n_redundant,

@@ -70,11 +70,12 @@ hyperparams = dict(C=C, penalty=penalty)
 
 lr = LogisticRegression(solver="liblinear")
 
-gridsearch = GridSearchCV(lr, hyperparams, cv=5, scoring="recall", verbose=0)
+gridsearch = GridSearchCV(lr, hyperparams, cv=5, verbose=0)
 
 
 # Case 1:
-# grid-search CV on train_simple_random_sample, and evaluate on _test
+# grid-search CV on train_simple_random_sample, and evaluate on *_test
+
 # plot
 fig, ax = plt.subplots()
 ax.bar(
@@ -91,21 +92,37 @@ best_model_01 = gridsearch.fit(
 
 best_penalty = best_model_01.best_estimator_.get_params()["penalty"]
 best_C = best_model_01.best_estimator_.get_params()["C"]
+print(f"Coefs from simple random sampling: {best_model_01.best_estimator_.coef_}")
+
 best_acc_score = best_model_01.best_estimator_.score(
     X_train_simple_random_sample, y_train_simple_random_sample
 )
 best_acc_score_test = best_model_01.best_estimator_.score(X_test, y_test)
 
-y_pred_01 = best_model_01.best_estimator_.predict(X_test)
-best_results = precision_recall_fscore_support(y_test, y_pred_01, average="binary")
+y_pred_simple_random_train = best_model_01.best_estimator_.predict(
+    X_train_simple_random_sample
+)
 
+best_results_train = precision_recall_fscore_support(
+    y_train_simple_random_sample, y_pred_simple_random_train, average="binary"
+)
+
+y_pred_simple_random_sample_test = best_model_01.best_estimator_.predict(X_test)
+
+best_results_test = precision_recall_fscore_support(
+    y_test, y_pred_simple_random_sample_test, average="binary"
+)
+
+print("")
 # print(f'Simple random sampling: Best accuracy score on train data: {best_acc_score}')
 # print(f'Simple random sampling: Best accuracy score on test data: {best_acc_score_test}')  # noqa
-# print(f'Simple random sampling: Best accuracy precision, recall, f1: {best_results}')
+# print(f'Simple random sampling: Best accuracy precision, recall, f1 on train: {best_results_train}')  # noqa
+# print(f'Simple random sampling: Best accuracy precision, recall, f1 on test: {best_results_test}')  # noqa
 
 
 # Case 2:
 # grid-search CV on train_simple_random_sample, and evaluate on _test
+
 # plot
 fig, ax = plt.subplots()
 ax.bar(
@@ -120,23 +137,35 @@ best_model_02 = gridsearch.fit(X_train_stratified_sample, y_train_stratified_sam
 
 best_penalty_02 = best_model_02.best_estimator_.get_params()["penalty"]
 best_C_02 = best_model_02.best_estimator_.get_params()["C"]
+print(f"Coefs from stratified sampling:    {best_model_02.best_estimator_.coef_}")
+
 best_acc_score_02 = best_model_02.best_estimator_.score(
     X_train_stratified_sample, y_train_stratified_sample
 )
 best_acc_score_test_02 = best_model_02.best_estimator_.score(X_test, y_test)
 
-y_pred_02 = best_model_02.best_estimator_.predict(X_test)
-best_results_02 = precision_recall_fscore_support(y_test, y_pred_02, average="binary")
+y_pred_stratified_train = best_model_02.best_estimator_.predict(
+    X_train_stratified_sample
+)
+
+best_results_02_train = precision_recall_fscore_support(
+    y_train_stratified_sample, y_pred_stratified_train, average="binary"
+)
+
+y_pred_stratified_test = best_model_02.best_estimator_.predict(X_test)
+
+best_results_02_test = precision_recall_fscore_support(
+    y_test, y_pred_stratified_test, average="binary"
+)
 
 
 # # Summary
+print("")
+
 print(f"X.shape:       {X.shape}")
 print(f"X_train.shape: {X_train.shape}")
 print(f"X_train_simple_random_sample.shape: {X_train_simple_random_sample.shape}")
 print(f"X_train_stratified_sample.shape:    {X_train_stratified_sample.shape}")
-
-# print(f'Coefs from simple random sampling: {best_model_01.best_estimator_.coef_}')
-# print(f'Coefs from stratified sampling:    {best_model_02.best_estimator_.coef_}')
 
 print(f"Simple random sampling: Best accuracy score on train data: {best_acc_score}")
 print(f"Simple random sampling: Best accuracy score on test data:{best_acc_score_test}")
@@ -144,5 +173,16 @@ print(f"Simple random sampling: Best accuracy score on test data:{best_acc_score
 print(f"Stratified sampling: Best accuracy score on train data:{best_acc_score_02}")
 print(f"Stratified sampling: Best accuracy score on test data:{best_acc_score_test_02}")
 
-print(f"Simple random sampling: Best precision, recall, f1: {best_results}")
-print(f"Stratified sampling: Best precision, recall, f1:    {best_results_02}")
+print(
+    f"Simple random sampling: Best precision, recall, f1 on train data: {best_results_train}"  # noqa
+)
+print(
+    f"Simple random sampling: Best precision, recall, f1 on test data:  {best_results_test}"  # noqa
+)
+
+print(
+    f"Stratified sampling: Best precision, recall, f1 on train data:    {best_results_02_train}"  # noqa
+)
+print(
+    f"Stratified sampling: Best precision, recall, f1 on test data:     {best_results_02_test}"  # noqa
+)
