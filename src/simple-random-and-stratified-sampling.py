@@ -15,7 +15,7 @@ n_repeated = 0
 n_redundant = 0
 test_size_second_split = 0.90
 
-seed = 202204
+seed = 202206
 
 X, y = make_classification(
     n_samples=num_samples,
