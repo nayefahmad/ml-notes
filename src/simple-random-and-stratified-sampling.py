@@ -1,3 +1,12 @@
+# # Exploring simple random sampling vs stratified sampling in classification
+
+# ## Overview
+
+# todo:
+
+
+# ## Libraries
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -5,6 +14,9 @@ from sklearn.datasets import make_classification
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import precision_recall_fscore_support
+
+
+# ##
 
 num_samples = 10000
 num_classes = 2
