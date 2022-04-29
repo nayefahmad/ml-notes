@@ -48,6 +48,8 @@ classification_params = MakeClassificationParams(
 test_size_second_split = 0.90
 seed = 202206
 
+# ## Simulate data
+
 X, y = make_classification(
     n_samples=classification_params.num_samples,
     n_classes=classification_params.num_classes,
@@ -63,6 +65,8 @@ fig, ax = plt.subplots()
 ax.bar(["class 0", "class 1"], pd.Series(y).value_counts().to_list())
 ax.set_title("Distribution of data across classes")
 fig.show()
+
+# Initial split into train/test
 
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, stratify=y, shuffle=True, random_state=seed
@@ -80,7 +84,8 @@ for i, target in enumerate([y_train, y_test]):
 fig.tight_layout()
 fig.show()
 
-# Datasets
+# Second split into train/test datasets
+
 X_train_simple_random_sample, _, y_train_simple_random_sample, _ = train_test_split(
     X_train, y_train, test_size=test_size_second_split, shuffle=True, random_state=seed
 )
@@ -94,6 +99,8 @@ X_train_stratified_sample, _, y_train_stratified_sample, _ = train_test_split(
     random_state=seed,
 )
 
+# ## Modeling with logistic regression
+
 # Model hyperparams
 C = np.logspace(0, 4, 10)
 penalty = ["l1", "l2"]
@@ -103,6 +110,8 @@ lr = LogisticRegression(solver="liblinear")
 
 gridsearch = GridSearchCV(lr, hyperparams, cv=5, verbose=0)
 
+
+# ## Analysis
 
 # Case 1:
 # grid-search CV on train_simple_random_sample, and evaluate on *_test
