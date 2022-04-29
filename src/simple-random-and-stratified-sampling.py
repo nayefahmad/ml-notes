@@ -2,11 +2,12 @@
 
 # ## Overview
 
-# todo:
+# todo: finish this
 
 
 # ## Libraries
 
+from dataclasses import dataclass
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,27 +17,45 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import precision_recall_fscore_support
 
 
-# ##
+# ## Define parameters for creating a classification problem
 
-num_samples = 10000
-num_classes = 2
-weights = [0.95, 0.05]
-num_features = 3
-n_informative = 2
-n_repeated = 0
-n_redundant = 0
+
+@dataclass
+class MakeClassificationParams:
+    """Class for holding parameters required by sklearn.datasets.make_classification"""
+
+    num_samples: int
+    num_classes: int
+    weights: list
+    num_features: int
+    n_informative: int
+    n_repeated: int
+    n_redundant: int
+
+
+# ## Set parameters
+
+classification_params = MakeClassificationParams(
+    num_samples=10000,
+    num_classes=2,
+    weights=[0.95, 0.05],
+    num_features=3,
+    n_informative=2,
+    n_repeated=0,
+    n_redundant=0,
+)
+
 test_size_second_split = 0.90
-
 seed = 202206
 
 X, y = make_classification(
-    n_samples=num_samples,
-    n_classes=num_classes,
-    weights=weights,
-    n_features=num_features,
-    n_informative=n_informative,
-    n_redundant=n_redundant,
-    n_repeated=n_repeated,
+    n_samples=classification_params.num_samples,
+    n_classes=classification_params.num_classes,
+    weights=classification_params.weights,
+    n_features=classification_params.num_features,
+    n_informative=classification_params.n_informative,
+    n_redundant=classification_params.n_redundant,
+    n_repeated=classification_params.n_repeated,
     random_state=seed,
 )
 
