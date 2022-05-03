@@ -20,7 +20,7 @@ from sklearn.metrics import precision_recall_fscore_support
 # ## Define parameters for creating a classification problem
 
 
-@dataclass
+@dataclass(frozen=True)
 class MakeClassificationParams:
     """Class for holding parameters required by sklearn.datasets.make_classification"""
 
