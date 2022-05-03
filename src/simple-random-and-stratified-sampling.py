@@ -2,7 +2,18 @@
 
 # ## Overview
 
-# todo: finish this
+# The goal here is to try to assess whether stratified sampling is helpful in cases
+# where class imbalance is not extreme. In these cases, a simple random sample will
+# probably be enough to ensure that all classes appear in the training data. In a large
+# enough dataset, the class proportions in the training data should also be close to
+# the true proportions in the population.
+
+# *Approach*: simulate data for an imbalanced classification problem. Then compare
+# simple random versus stratified sampling by fitting a logistic regression-based
+# classifier in each case, and evaluating on a test set.
+
+# *Conclusion*: There does not seem to be a consistent benefit to stratified sampling
+# in this case.
 
 
 # ## Libraries
