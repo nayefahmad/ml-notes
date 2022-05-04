@@ -8,9 +8,12 @@
 # enough dataset, the class proportions in the training data should also be close to
 # the true proportions in the population.
 
-# *Approach*: simulate data for an imbalanced classification problem. Then compare
+# **Approach**: simulate data for an imbalanced classification problem. Then compare
 # simple random versus stratified sampling by fitting a logistic regression-based
 # classifier in each case, and evaluating on a test set.
+
+# I tried around 20 iterations of the simulation by manually changing the seed. In
+# future, it would be better to try a larger number, and run them programmatically.
 
 # *Conclusion*: There does not seem to be a consistent benefit to stratified sampling
 # in this case.
