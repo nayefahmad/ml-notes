@@ -2,6 +2,9 @@
 
 # ## Overview
 
+# todo: revisit this whole script. Does it make sense in light of discussion with
+#  Matt on 2022-05-05
+
 # The goal here is to try to assess whether stratified sampling is helpful in cases
 # where class imbalance is not extreme. In these cases, a simple random sample will
 # probably be enough to ensure that all classes appear in the training data. In a large
