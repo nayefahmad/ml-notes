@@ -11,6 +11,11 @@
 # enough dataset, the class proportions in the training data should also be close to
 # the true proportions in the population.
 
+# In these cases, one might still argue that there is a benefit to ensure that the
+# class proportions are the *same in the train and test* sets, which is what
+# stratifying will do. However, it doesn't seem like this is a huge or definitive
+# benefit.
+
 # **Approach**: simulate data for an imbalanced classification problem. Then compare
 # simple random versus stratified sampling by fitting a logistic regression-based
 # classifier in each case, and evaluating on a test set.
