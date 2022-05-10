@@ -5,11 +5,12 @@
 # todo: revisit this whole script. Does it make sense in light of discussion with
 #  Matt on 2022-05-05
 
-# The goal here is to try to assess whether stratified sampling is helpful in cases
-# where class imbalance is not extreme. In these cases, a simple random sample will
-# probably be enough to ensure that all classes appear in the training data. In a large
-# enough dataset, the class proportions in the training data should also be close to
-# the true proportions in the population.
+# The goal here is to try to assess whether
+# [stratified sampling](https://scikit-learn.org/stable/modules/cross_validation.html#stratification)  # noqa
+# is helpful in cases where class imbalance is not extreme. In these cases, a simple
+# random sample will probably be enough to ensure that all classes appear in the
+# training data. In a large enough dataset, the class proportions in the training data
+# should also be close to the true proportions in the population.
 
 # In these cases, one might still argue that there is a benefit to ensure that the
 # class proportions are the *same in the train and test* sets, which is what
