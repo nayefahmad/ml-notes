@@ -15,6 +15,8 @@ df = pd.DataFrame(
     }
 )
 
+df
+
 # Plotting with pandas:
 
 df.plot(x="numeric", y="target", kind="scatter")
@@ -52,7 +54,14 @@ for model_name, model in models.items():
     coeffs = model.coef_
     train_preds = model.predict(X)
     errors = y.values - train_preds
-    results[f"{model_name}"] = (coeffs, train_preds, errors)
+    results[f"{model_name}"] = {
+        "coeffs": coeffs,
+        "train_preds": train_preds,
+        "errors": errors,
+    }
 
+# Check that linear regression on categorical var will result in just
+# predicting the category mean in each case.
 group_means = df.groupby("category")["target"].mean().tolist()
-# results['lm'][1] in group_means
+for pred in results["lm"]["train_preds"]:
+    assert round(pred, 0).astype(int) in group_means
