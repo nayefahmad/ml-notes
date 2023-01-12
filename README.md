@@ -1,5 +1,9 @@
 # ML notes
 
+## Contents 
+1. [PyTorch demo: image classification](https://github.com/nayefahmad/ml-notes/blob/main/src/pytorch-demo.ipynb)
+2. [Experimenting with simple random sampling versus stratified sampling](https://github.com/nayefahmad/ml-notes/blob/main/src/simple-random-and-stratified-sampling.ipynb)
+
 ## Repo structure 
 
 - `src` directory: code files 
@@ -13,6 +17,3 @@
 - `requirements.txt`: python packages used 
 
 
-## Contents 
-1. [PyTorch demo: image classification](https://github.com/nayefahmad/ml-notes/blob/main/src/pytorch-demo.ipynb)
-2. [Experimenting with simple random sampling versus stratified sampling](https://github.com/nayefahmad/ml-notes/blob/main/src/simple-random-and-stratified-sampling.ipynb)
