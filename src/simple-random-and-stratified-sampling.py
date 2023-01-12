@@ -27,6 +27,24 @@
 # *Conclusion*: There does not seem to be a consistent benefit to stratified sampling
 # in this case.
 
+# ### Relevant links:
+
+# - [TDS post by KSV Muralidhar](https://towardsdatascience.com/what-is-stratified-cross-validation-in-machine-learning-8844f3e7ae8e)  # noqa
+#
+# - ML cookbook, Chris Albon, p181. Mentions stratification in the context of K-fold
+#     CV. Excerpt: "It is often beneficial to have folds containing roughly the same
+#     percentage of observations from each of the different target classes. E.g. if
+#     our target vector contained gender and 80% of observations were male, then each
+#     fold would contain 80% male and 20% female observations."
+#
+# - [Feature Eng & Selection book, p49](http://www.feat.engineering/). Also mentions
+#     stratification in the context of KFCV. Excerpt: "When the outcome is categorical,
+#     stratified splitting techniques can be used to ensure that analysis & assessment
+#     sets produce the same frequency distribution of the outcome. This is also a good
+#     idea when a continuous outcome is skewed, or a categorical outcome is imbalanced,
+#     but is unlikely to be problematic otherwise."
+#
+
 
 # ## Libraries
 
