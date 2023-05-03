@@ -3,6 +3,7 @@
 ## Contents 
 1. [PyTorch demo: image classification](https://github.com/nayefahmad/ml-notes/blob/main/src/pytorch-demo.ipynb)
 2. [Experimenting with simple random sampling versus stratified sampling](https://github.com/nayefahmad/ml-notes/blob/main/src/simple-random-and-stratified-sampling.ipynb)
+3. [Using pytorch as an optimizer for distribution fitting](https://github.com/nayefahmad/ml-notes/blob/main/2023-05-02-pytorch-distribution-fitting.ipynb)
 
 ## Repo structure 
 
