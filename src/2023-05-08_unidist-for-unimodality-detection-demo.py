@@ -1,3 +1,11 @@
+# # UniDip algorithim for detecting multimodality
+
+# ## Overview
+
+
+# ## Conclusions
+
+
 from unidip import UniDip
 from scipy.stats import weibull_min
 from dataclasses import dataclass
@@ -198,7 +206,9 @@ results_df = pd.DataFrame(results).T
 results_df.index.rename("idx", inplace=True)
 print(results_df)
 
-idx_selected = 73
+
+# for ad-hoc exploration:
+idx_selected = 60
 np.quantile(datasets[idx_selected], [0.9, 0.95, 0.99, 1.0])
 data = datasets[idx_selected]
 q90 = np.quantile(data, 0.90)
