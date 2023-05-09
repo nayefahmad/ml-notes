@@ -2,12 +2,37 @@
 
 # ## Overview
 
+# We are looking for ways to weed out certain distributions before doing Weibull fits.
+# Ideally we only do fits on unimodal distributions. Cases that have a mixture of an
+# infant mortality Weibull and a wearout Weibull tend to get fitted with a "compromise"
+# wearout that hides the infant mortality. If we can detect multi-modality, we could
+# handle those cases separately.
+
+# Here we explore the UniDip algorithm for detecting multimodality. The UniDip
+# algorithm is a non-parametric method for detecting unimodality in a dataset by
+# iteratively computing the dip statistic, which measures the discrepancy between the
+# empirical cumulative distribution function (ECDF) and a fitted unimodal
+# distribution function. Intervals with dip statistics exceeding a predefined
+# threshold are considered multimodal and are further split and tested until all
+# intervals are deemed unimodal or split.
+
 
 # ## Conclusions
 
+# - Unidip has fairly high precision, and acceptable recall
+# - I have come across cases where the algorithm fails. For now I simply reran instead
+#     of debugging; that has worked so far.
+
+# ## References
+
+# - [UniDip python implementation on GH](https://github.com/BenjaminDoran/unidip)
+# - [UniDip/Skinny-dip paper](https://www.kdd.org/kdd2016/papers/files/rfp0008-maurusA.pdf)  # noqa
+# - [Related paper on DipEncoder](https://dl.acm.org/doi/pdf/10.1145/3534678.3539407)
 
 import warnings
 from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
 from typing import Optional
 
 import matplotlib.pyplot as plt
@@ -127,12 +152,12 @@ for shape in np.arange(0.2, 2.5, 0.2):
     examples_case_09.append(case)
 
 examples_case_10 = []
-for scale in np.arange(1, 10, 1):
+for scale in np.arange(10, 100, 10):
     case = SimulationCase(
-        shape_01=2.0,
-        shape_02=2.0,
-        num_points_01=50,
-        num_points_02=50,
+        shape_01=3.0,
+        shape_02=3.0,
+        num_points_01=100,
+        num_points_02=100,
         scale_01=scale,
         scale_02=1.0,
     )
@@ -154,7 +179,11 @@ all_examples = (
 
 datasets = {}
 results = {}
-with PdfPages("2023-05-08_unidip.pdf") as pdf:
+
+dst_dir = Path(r"C:\Nayef\2023\2023-05-08_cm_unidip-multimodality-detection\dst")
+dst_file = f'{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}'
+dst = str(dst_dir.joinpath(f"{dst_file}_unidip-multimodality-detection.pdf"))
+with PdfPages(dst) as pdf:
 
     for idx, example in enumerate(all_examples):
         data = weibull_min.rvs(
@@ -183,17 +212,17 @@ with PdfPages("2023-05-08_unidip.pdf") as pdf:
         print(f"idx={idx}; intervals: {intervals}")
         num_modes = len(intervals)
 
-        plot_vlines = []
-        while len(intervals) > 0:
-            first_interval = intervals[0]
-            lower = first_interval[0]
-            upper = first_interval[1]
-            plot_vlines.append(lower)
-            plot_vlines.append(upper)
-            intervals = intervals[1:]
-
         print_plots = True
         if print_plots:
+            plot_vlines = []
+            while len(intervals) > 0:
+                first_interval = intervals[0]
+                lower = first_interval[0]
+                upper = first_interval[1]
+                plot_vlines.append(lower)
+                plot_vlines.append(upper)
+                intervals = intervals[1:]
+
             txt += f"\nnum peaks found={num_modes}"
             fig, ax = plt.subplots(figsize=(10, 6))
             sns.distplot(data, ax=ax)
@@ -222,7 +251,7 @@ print(results_df)
 
 
 # for ad-hoc exploration:
-idx_selected = 60
+idx_selected = 114
 np.quantile(datasets[idx_selected], [0.9, 0.95, 0.99, 1.0])
 data = datasets[idx_selected]
 q90 = np.quantile(data, 0.90)
