@@ -6,16 +6,17 @@
 # ## Conclusions
 
 
-from unidip import UniDip
-from scipy.stats import weibull_min
-from dataclasses import dataclass
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_pdf import PdfPages
-import seaborn as sns
 import warnings
-import pandas as pd
+from dataclasses import dataclass
 from typing import Optional
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from matplotlib.backends.backend_pdf import PdfPages
+from scipy.stats import weibull_min
+from unidip import UniDip
 
 warnings.simplefilter("ignore")
 
@@ -125,6 +126,18 @@ for shape in np.arange(0.2, 2.5, 0.2):
     )
     examples_case_09.append(case)
 
+examples_case_10 = []
+for scale in np.arange(1, 10, 1):
+    case = SimulationCase(
+        shape_01=2.0,
+        shape_02=2.0,
+        num_points_01=50,
+        num_points_02=50,
+        scale_01=scale,
+        scale_02=1.0,
+    )
+    examples_case_10.append(case)
+
 all_examples = (
     examples_case_01
     + examples_case_02
@@ -135,6 +148,7 @@ all_examples = (
     + examples_case_07
     + examples_case_08
     + examples_case_09
+    + examples_case_10
 )
 
 
