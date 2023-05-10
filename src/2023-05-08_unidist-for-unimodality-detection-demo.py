@@ -203,7 +203,7 @@ with PdfPages(dst) as pdf:
                 c=example.shape_02, scale=example.scale_02, size=example.num_points_02
             )
             data = np.concatenate([data, data2])
-            txt += f"\nshape 2={example.shape_02:.2f}, scale 1={example.scale_02}, "
+            txt += f"\nshape 2={example.shape_02:.2f}, scale 2={example.scale_02}, "
             txt += f"n02={example.num_points_02}"
 
         # unidip algorithm:
