@@ -175,6 +175,18 @@ for shape in np.arange(0.2, 2.5, 0.2):
     )
     examples_case_11.append(case)
 
+examples_case_12 = []
+for shape in np.arange(0.2, 2.5, 0.2):
+    case = SimulationCase(
+        shape_01=shape,
+        shape_02=2.0,
+        num_points_01=1000,
+        num_points_02=1000,
+        scale_01=1.0,
+        scale_02=2.0,
+    )
+    examples_case_12.append(case)
+
 all_examples = (
     examples_case_01
     + examples_case_02
@@ -187,6 +199,7 @@ all_examples = (
     + examples_case_09
     + examples_case_10
     + examples_case_11
+    + examples_case_12
 )
 
 
