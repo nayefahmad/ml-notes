@@ -8,6 +8,8 @@
 # - [SE post](https://datascience.stackexchange.com/questions/15989/micro-average-vs-macro-average-performance-in-a-multiclass-classification-settin)  # noqa
 
 
+from typing import List
+
 import pandas as pd
 from sklearn.datasets import load_iris
 from sklearn.linear_model import LogisticRegressionCV
@@ -31,10 +33,39 @@ pd.DataFrame(scores).T.reset_index().rename(
     columns={0: "precision", 1: "recall", 2: "f1", 3: "support", "index": "class"}
 )
 
-print(classification_report(y_train, preds))
+print(classification_report(y_train, preds, digits=4))
 
 micro_precision = precision_score(y_train, preds, average="micro")
 macro_precision = precision_score(y_train, preds, average="macro")
+weighted_precision = precision_score(y_train, preds, average="weighted")
+print(micro_precision, macro_precision, weighted_precision)
 
 micro_recall = recall_score(y_train, preds, average="micro")
 macro_recall = recall_score(y_train, preds, average="macro")
+weighted_recall = recall_score(y_train, preds, average="weighted")
+print(micro_recall, macro_recall, weighted_recall)
+
+
+def count_true_positives(
+    *, _class: int, true_values: List, predicted_values: List
+) -> int:
+    class_values_filter = [True if x == _class else False for x in true_values]
+    class_values = [
+        item for item, include in zip(true_values, class_values_filter) if include
+    ]
+    class_predicted = [
+        item for item, include in zip(predicted_values, class_values_filter) if include
+    ]
+    true_positives = [
+        True if pred == actual else False
+        for pred, actual in zip(class_predicted, class_values)
+    ]
+    count = sum(true_positives)
+    return count
+
+
+def count_false_positives():
+    pass
+
+
+count_true_positives(_class=0, true_values=y_train, predicted_values=preds)
