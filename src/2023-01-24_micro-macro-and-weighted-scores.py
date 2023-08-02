@@ -46,7 +46,7 @@ weighted_recall = recall_score(y_train, preds, average="weighted")
 print(micro_recall, macro_recall, weighted_recall)
 
 
-def count_true_positives(
+def count_true_positives_and_false_negatives(
     *, _class: int, true_values: List, predicted_values: List
 ) -> int:
     class_values_filter = [True if x == _class else False for x in true_values]
@@ -60,12 +60,39 @@ def count_true_positives(
         True if pred == actual else False
         for pred, actual in zip(class_predicted, class_values)
     ]
+
+    # false_negatives = []  # todo: finish this
+
     count = sum(true_positives)
     return count
 
 
-def count_false_positives():
-    pass
+def count_false_positives(*, _class: int, true_values: List, predicted_values: List):
+    class_predicted_filter = [True if x == _class else False for x in predicted_values]
+    class_predicted = [
+        item
+        for item, include in zip(predicted_values, class_predicted_filter)
+        if include
+    ]
+    class_actual = [
+        item for item, include in zip(true_values, class_predicted_filter) if include
+    ]
+
+    false_positives = [
+        True if pred != actual else False
+        for pred, actual in zip(class_predicted, class_actual)
+    ]
+    count = sum(false_positives)
+    return count
 
 
-count_true_positives(_class=0, true_values=y_train, predicted_values=preds)
+for target in range(3):
+    tp = count_true_positives_and_false_negatives(
+        _class=target, true_values=y_train, predicted_values=preds
+    )
+    fp = count_false_positives(
+        _class=target, true_values=y_train, predicted_values=preds
+    )
+
+    print(f"TP = {tp}")
+    print(f"FP = {fp}")
