@@ -48,7 +48,7 @@ print(micro_recall, macro_recall, weighted_recall)
 
 def count_true_positives_and_false_negatives(
     *, _class: int, true_values: List, predicted_values: List
-) -> int:
+):
     class_values_filter = [True if x == _class else False for x in true_values]
     class_values = [
         item for item, include in zip(true_values, class_values_filter) if include
@@ -61,10 +61,9 @@ def count_true_positives_and_false_negatives(
         for pred, actual in zip(class_predicted, class_values)
     ]
 
-    # false_negatives = []  # todo: finish this
-
-    count = sum(true_positives)
-    return count
+    tp = sum(true_positives)
+    fn = len(class_values) - tp
+    return tp, fn
 
 
 def count_false_positives(*, _class: int, true_values: List, predicted_values: List):
@@ -87,12 +86,13 @@ def count_false_positives(*, _class: int, true_values: List, predicted_values: L
 
 
 for target in range(3):
-    tp = count_true_positives_and_false_negatives(
+    tp, fn = count_true_positives_and_false_negatives(
         _class=target, true_values=y_train, predicted_values=preds
     )
     fp = count_false_positives(
         _class=target, true_values=y_train, predicted_values=preds
     )
 
-    print(f"TP = {tp}")
+    print(f"\ntarget = {target}")
+    print(f"TP = {tp}, FN = {fn}, support = {tp+fn}")
     print(f"FP = {fp}")
