@@ -67,6 +67,7 @@ def count_true_positives_and_false_negatives(
 
 
 def count_false_positives(*, _class: int, true_values: List, predicted_values: List):
+    # todo: add count of true negatives
     class_predicted_filter = [True if x == _class else False for x in predicted_values]
     class_predicted = [
         item
