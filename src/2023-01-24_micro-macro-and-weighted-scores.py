@@ -2,6 +2,9 @@
 
 # ## Overview
 
+# Using `iris` data to demonstrate the difference between different methods of
+# aggregating class-specific performance to a top-level result.
+
 # ## References
 
 # - [sklearn docs](https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics)  # noqa
