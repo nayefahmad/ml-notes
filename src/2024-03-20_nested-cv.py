@@ -41,7 +41,10 @@ error of the model that uses these params?
 
 - Option 2: Use a “nested” cross-validation. Use an inner CV loop to select best
   hyperparams (similar to what was done above), and an outer CV loop to evaluate
-  testing/generalization error.
+  testing/generalization error. Basically, think of the "outer" CV loop as standard CV,
+  but with the added feature that for any particular iteration of the loop, the
+  hyperparameters selected and used for predicting on the test fold were selected using
+  CV on the train set, and trying out several different hyperparameter values.
 """
 
 print("done")
