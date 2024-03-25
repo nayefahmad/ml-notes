@@ -55,12 +55,14 @@ model = GridSearchCV(
     estimator=model_to_tune, param_grid=param_grid, cv=inner_cv, n_jobs=-1
 )
 
-# Setting cv=outer_cv ensures that a test set is set aside, while the train set
-# that is passed to `model` (aka a GridSearchCV) is then further split using the
-# cv attribute of that object. This ensures that for each of the three outer_cv
-# iterations, the inner CV is used to select best hyperparams, and then the model with
-# those hyperparams is used to predict on the test set from outer_cv, which it has never
-# seen before.
+"""
+Setting cv=outer_cv ensures that a test set is set aside, while the train set
+that is passed to `model` (aka a GridSearchCV) is then further split using the
+cv attribute of that object. This ensures that for each of the three outer_cv
+iterations, the inner CV is used to select best hyperparams, and then the model with
+those hyperparams is used to predict on the test set from outer_cv, which it has never
+seen before.
+"""
 test_set_scores = cross_val_score(model, data, target, cv=outer_cv, n_jobs=-1)
 
 print("done")
