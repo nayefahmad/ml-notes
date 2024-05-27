@@ -77,7 +77,7 @@ def test(dataloader, model, loss_fn):
     with torch.no_grad():
         for batch, (X, y) in enumerate(dataloader):
             pred = model(X)
-            test_loss += loss_fn(pred, y).item()
+            test_loss += loss_fn(pred.squeeze(-1), y).item()
 
     test_loss /= num_batches
     print(f"Avg loss: {test_loss:>8f}")
