@@ -57,16 +57,15 @@ def train(dataloader, model, loss_fn, optimizer):
 
         # Calculate prediction error
         pred = model(X)
-        loss = loss_fn(pred, y)
+        loss = loss_fn(pred.squeeze(-1), y)
 
         # Backpropagation
         loss.backward()
         optimizer.step()
         optimizer.zero_grad()
 
-        if batch % 100 == 0:
-            loss, current = loss.item(), (batch + 1) * len(X)
-            print(f"Loss: {loss:>7f}, Current: {current}/{size}")
+        loss, current = loss.item(), (batch + 1) * len(X)
+        print(f"Loss: {loss:>7f}, Current: {current}/{size}")
 
 
 def test(dataloader, model, loss_fn):
