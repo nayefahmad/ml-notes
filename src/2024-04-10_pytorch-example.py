@@ -55,6 +55,7 @@ class Model(nn.Module):
 
 def train(dataloader, model, loss_fn, optimizer):
     size = len(dataloader.dataset)
+    current = 0
     model.train()
     for batch, (X, y) in enumerate(dataloader):
 
@@ -67,8 +68,8 @@ def train(dataloader, model, loss_fn, optimizer):
         optimizer.step()
         optimizer.zero_grad()
 
-        loss, current = loss.item(), (batch + 1) * len(X)
-        # todo: why last printout is 152/300?
+        loss = loss.item()
+        current = current + len(X)
         print(f"Loss: {loss:>7f}, Current: {current}/{size}")
 
 
@@ -116,3 +117,5 @@ if __name__ == "__main__":
     # Compare with LR:
     lrcv = LogisticRegressionCV()
     # todo: use nested CV to get best h-params, and get generalization error as well
+
+    print("done")
