@@ -1,7 +1,9 @@
 """
 Basic example of training a DL model for regression with pytorch
 
-Reference: https://pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html
+References:
+- https://pytorch.org/tutorials/beginner/basics/quickstart_tutorial.html
+- https://pytorch.org/tutorials/beginner/basics/optimization_tutorial.html
 
 """
 
@@ -12,6 +14,7 @@ from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import train_test_split
 from torch import nn
 from torch.utils.data import DataLoader, Dataset
+from tqdm import tqdm
 
 N_FEATURES = 10
 SEED = 2024
@@ -65,6 +68,7 @@ def train(dataloader, model, loss_fn, optimizer):
         optimizer.zero_grad()
 
         loss, current = loss.item(), (batch + 1) * len(X)
+        # todo: why last printout is 152/300?
         print(f"Loss: {loss:>7f}, Current: {current}/{size}")
 
 
@@ -101,10 +105,13 @@ if __name__ == "__main__":
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
     before_training = model.forward(data_train[0][0])
-    train(dataloader_train, model, loss_fn, optimizer)
-    after_training = model.forward(data_train[0][0])
 
-    test(dataloader_test, model, loss_fn)
+    num_epochs = 10
+    for epoch in tqdm(range(num_epochs)):
+        train(dataloader_train, model, loss_fn, optimizer)
+        test(dataloader_test, model, loss_fn)
+
+    after_training = model.forward(data_train[0][0])
 
     # Compare with LR:
     lrcv = LogisticRegressionCV()
