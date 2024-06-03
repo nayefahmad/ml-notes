@@ -53,12 +53,34 @@ class Model(nn.Module):
         return out
 
 
+def train_with_early_stopping(
+    dataloader_train, dataloader_val, model, loss_fn, optimizer, num_epochs, patience
+):
+    best_val_loss = float("inf")
+    epochs_without_improvement = 0
+
+    for epoch in range(num_epochs):
+        loss = train(dataloader_train, model, loss_fn, optimizer)
+        avg_loss_val = test(dataloader_val, model, loss_fn)
+
+        if avg_loss_val < best_val_loss:
+            best_val_loss = avg_loss_val
+            epochs_without_improvement = 0
+        else:
+            epochs_without_improvement += 1
+
+        print(f"Epoch {epoch + 1}/{num_epochs}, Training loss: {loss.item():.4f}")
+
+        if epochs_without_improvement >= patience:
+            print(f"Early stopping triggered at epoch {epoch + 1}")
+            break
+
+
 def train(dataloader, model, loss_fn, optimizer):
     size = len(dataloader.dataset)
     current = 0
     model.train()
     for batch, (X, y) in enumerate(dataloader):
-
         # Calculate prediction error
         pred = model(X)
         loss = loss_fn(pred.squeeze(-1), y)
@@ -71,6 +93,7 @@ def train(dataloader, model, loss_fn, optimizer):
         loss = loss.item()
         current = current + len(X)
         print(f"Loss: {loss:>7f}, Current: {current}/{size}")
+    return loss
 
 
 def test(dataloader, model, loss_fn):
@@ -85,7 +108,7 @@ def test(dataloader, model, loss_fn):
             test_loss += loss_fn(pred.squeeze(-1), y).item()
 
     test_loss /= num_batches
-    print(f"Avg loss: {test_loss:>8f}")
+    return test_loss
 
 
 if __name__ == "__main__":
@@ -111,6 +134,8 @@ if __name__ == "__main__":
     for epoch in tqdm(range(num_epochs)):
         train(dataloader_train, model, loss_fn, optimizer)
         test(dataloader_test, model, loss_fn)
+
+    # train_with_early_stopping()  # todo: finish this
 
     after_training = model.forward(data_train[0][0])
 
