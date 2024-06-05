@@ -14,10 +14,9 @@ from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import train_test_split
 from torch import nn
 from torch.utils.data import DataLoader, Dataset
-from tqdm import tqdm
 
 N_FEATURES = 10
-SEED = 2024
+SEED = 2024  # todo: seeding not working properly
 
 
 class TabularData(Dataset):
@@ -60,6 +59,7 @@ def train_with_early_stopping(
     epochs_without_improvement = 0
 
     for epoch in range(num_epochs):
+        print_epoch(epoch)
         loss = train(dataloader_train, model, loss_fn, optimizer)
         avg_loss_val = test(dataloader_val, model, loss_fn)
 
@@ -69,7 +69,8 @@ def train_with_early_stopping(
         else:
             epochs_without_improvement += 1
 
-        print(f"Epoch {epoch + 1}/{num_epochs}, Training loss: {loss.item():.4f}")
+        print(f"Epoch {epoch + 1}/{num_epochs}, Last batch training loss: {loss:.5f}")
+        print(f"Avg val loss: {avg_loss_val}")
 
         if epochs_without_improvement >= patience:
             print(f"Early stopping triggered at epoch {epoch + 1}")
@@ -92,7 +93,10 @@ def train(dataloader, model, loss_fn, optimizer):
 
         loss = loss.item()
         current = current + len(X)
-        print(f"Loss: {loss:>7f}, Current: {current}/{size}")
+
+        print_train_progress = False
+        if print_train_progress:
+            print(f"Train loss: {loss:.5f}, Current instance: {current}/{size}")
     return loss
 
 
@@ -111,31 +115,51 @@ def test(dataloader, model, loss_fn):
     return test_loss
 
 
+def print_epoch(epoch):
+    print(f"{'-'*40}")
+    print(f"Epoch: {epoch + 1}")
+    print(f"{'-'*40}")
+
+
 if __name__ == "__main__":
     X, y = make_regression(n_samples=400, n_features=N_FEATURES, random_state=SEED)
-    X_train, X_test, y_train, y_test = train_test_split(X, y)
+    X_train_and_val, X_test, y_train_and_val, y_test = train_test_split(
+        X, y, test_size=0.10
+    )
+    X_train, X_val, y_train, y_val = train_test_split(
+        X_train_and_val, y_train_and_val, test_size=0.20
+    )
 
     data_train = TabularData(X_train, y_train)
+    data_val = TabularData(X_val, y_val)
     data_test = TabularData(X_test, y_test)
 
     # DataLoader wraps an iterable around a Dataset
     dataloader_train = DataLoader(data_train, batch_size=8, shuffle=True)
+    dataloader_val = DataLoader(data_val, batch_size=8, shuffle=True)
     dataloader_test = DataLoader(data_test, batch_size=8, shuffle=True)
 
     model = Model()
-    print(model)
-
     loss_fn = nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
     before_training = model.forward(data_train[0][0])
 
-    num_epochs = 10
-    for epoch in tqdm(range(num_epochs)):
-        train(dataloader_train, model, loss_fn, optimizer)
-        test(dataloader_test, model, loss_fn)
+    num_epochs = 50
+    patience = 3
+    # for epoch in tqdm(range(num_epochs)):
+    #     train(dataloader_train, model, loss_fn, optimizer)
+    #     test(dataloader_test, model, loss_fn)
 
-    # train_with_early_stopping()  # todo: finish this
+    train_with_early_stopping(
+        dataloader_train,
+        dataloader_val,
+        model,
+        loss_fn,
+        optimizer,
+        num_epochs,
+        patience,
+    )
 
     after_training = model.forward(data_train[0][0])
 
