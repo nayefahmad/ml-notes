@@ -16,7 +16,8 @@ from torch import nn
 from torch.utils.data import DataLoader, Dataset
 
 N_FEATURES = 10
-SEED = 2024  # todo: seeding not working properly
+SEED = 2024
+torch.manual_seed(SEED)
 
 
 class TabularData(Dataset):
@@ -74,6 +75,7 @@ def train_with_early_stopping(
 
         if epochs_without_improvement >= patience:
             print(f"Early stopping triggered at epoch {epoch + 1}")
+            # TODO: how to revert to the best epoch?
             break
 
 
@@ -124,10 +126,10 @@ def print_epoch(epoch):
 if __name__ == "__main__":
     X, y = make_regression(n_samples=400, n_features=N_FEATURES, random_state=SEED)
     X_train_and_val, X_test, y_train_and_val, y_test = train_test_split(
-        X, y, test_size=0.10
+        X, y, test_size=0.10, random_state=SEED
     )
     X_train, X_val, y_train, y_val = train_test_split(
-        X_train_and_val, y_train_and_val, test_size=0.20
+        X_train_and_val, y_train_and_val, test_size=0.20, random_state=SEED
     )
 
     data_train = TabularData(X_train, y_train)
