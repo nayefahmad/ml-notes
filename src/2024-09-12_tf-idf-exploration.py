@@ -5,6 +5,7 @@ Reference: V. Boykis, "Embeddings" doc.
 
 """
 import pandas as pd
+from sklearn.decomposition import PCA
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
 # Represent two tails by their history of destinations
@@ -40,3 +41,39 @@ df_02 = pd.DataFrame(
 
 print(df_01)
 print(df_02)
+
+
+# ## PCA to reduce each tail to a smaller number of dimensions
+
+seed = 2024
+
+# Using bag-of-words features:
+pca = PCA(random_state=seed, n_components=4)
+pca_01 = pca.fit(df_01)
+
+pca_01.components_
+# assert pca_01.components_.shape == (4,9)
+pca_01.explained_variance_
+
+df_01_pca = pd.DataFrame(
+    pca_01.components_,  # index=tail_ids # , columns=vectorizer_01.get_feature_names()
+).T
+
+print(df_01)
+print(df_01_pca)
+
+
+# Using tf-idf features:
+pca = PCA(random_state=seed, n_components=1)
+pca_02 = pca.fit(df_02.T)
+
+pca_02.components_
+# assert pca_02.components_.shape == (4,9)
+pca_02.explained_variance_
+
+df_02_pca = pd.DataFrame(
+    pca_02.components_, index=tail_ids  # , columns=vectorizer_02.get_feature_names()
+).T
+
+print(df_02)
+print(df_02_pca)
