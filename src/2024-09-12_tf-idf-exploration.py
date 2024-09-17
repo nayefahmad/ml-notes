@@ -1,9 +1,12 @@
 """
 # Exploring TF-IDF
 
-Reference: V. Boykis, "Embeddings" doc.
+References:
+    - V. Boykis, "Embeddings" doc.
+    - [PCA notes](https://www.datacamp.com/tutorial/principal-component-analysis-in-python)  # noqa
 
 """
+import numpy as np
 import pandas as pd
 from sklearn.decomposition import PCA
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
@@ -48,15 +51,18 @@ print(df_02)
 seed = 2024
 
 # Using bag-of-words features:
-pca = PCA(random_state=seed, n_components=4)
-pca_01 = pca.fit(df_01)
+pca = PCA(random_state=seed)
+pca_01 = pca.fit(df_01.T)
 
 pca_01.components_
-# assert pca_01.components_.shape == (4,9)
+pca_01.components_.shape
+assert pca_01.components_.shape == (4, 9)
+np.corrcoef(pca_01.components_)
+
 pca_01.explained_variance_
 
 df_01_pca = pd.DataFrame(
-    pca_01.components_,  # index=tail_ids # , columns=vectorizer_01.get_feature_names()
+    pca_01.components_, index=tail_ids, columns=vectorizer_01.get_feature_names()
 ).T
 
 print(df_01)
@@ -64,11 +70,11 @@ print(df_01_pca)
 
 
 # Using tf-idf features:
-pca = PCA(random_state=seed, n_components=1)
+pca = PCA(random_state=seed)
 pca_02 = pca.fit(df_02.T)
 
 pca_02.components_
-# assert pca_02.components_.shape == (4,9)
+assert pca_02.components_.shape == (4, 9)
 pca_02.explained_variance_
 
 df_02_pca = pd.DataFrame(
