@@ -10,6 +10,8 @@ import numpy as np
 import pandas as pd
 from sklearn.decomposition import PCA
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
 # Represent two tails by their history of destinations
 tails = [
@@ -51,15 +53,25 @@ print(df_02)
 seed = 2024
 
 # Using bag-of-words features:
-pca = PCA(random_state=seed)
+pca = Pipeline(
+    [
+        ("scaling", StandardScaler()),
+        ("pca", PCA(random_state=seed)),
+    ]
+)
+
 pca_01 = pca.fit(df_01.T)
 
-pca_01.components_
-pca_01.components_.shape
-assert pca_01.components_.shape == (4, 9)
-np.corrcoef(pca_01.components_)
+loadings = pca_01.named_steps["pca"].components_
+assert loadings.shape == (4, 9)
+np.corrcoef(loadings)  # loadings are not expected to be orthogonal
 
-pca_01.explained_variance_
+principal_components = pca.transform(df_01.T)
+assert principal_components.shape == (4, 4)
+np.corrcoef(principal_components, rowvar=False)
+
+
+pca_01.named_steps["pca"].explained_variance_
 
 df_01_pca = pd.DataFrame(
     pca_01.components_, index=tail_ids, columns=vectorizer_01.get_feature_names()
