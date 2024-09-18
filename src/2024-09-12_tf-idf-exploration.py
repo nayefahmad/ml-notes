@@ -61,26 +61,43 @@ pca = Pipeline(
 )
 
 pca_01 = pca.fit(df_01.T)
-
-loadings = pca_01.named_steps["pca"].components_
-assert loadings.shape == (4, 9)
-np.corrcoef(loadings)  # loadings are not expected to be orthogonal
-
-principal_components = pca.transform(df_01.T)
-assert principal_components.shape == (4, 4)
-np.corrcoef(principal_components, rowvar=False)
-
-
 pca_01.named_steps["pca"].explained_variance_
 
-df_01_pca = pd.DataFrame(
-    pca_01.components_, index=tail_ids, columns=vectorizer_01.get_feature_names()
-).T
+"""
+PCA can extract at most min(n_samples, n_features) components. So here we can only
+extract 4 components.
 
-print(df_01)
-print(df_01_pca)
+PC matrix has shape: (n_samples, n_components). Each element represents the
+projection of a sample onto a principal component (PC). Each element PC[i, j] in the
+matrix corresponds to how much of the i-th sample contributes to the j-th principal
+component.
+
+Loadings matrix (pca.components_) has shape (n_components, n_features). Each element
+represents the weight (or "loading") of a feature on a principal component. Each
+element loadings[j, k] in this matrix shows the contribution (weight or coefficient)
+of the k-th feature to the j-th principal component.
+
+Principal Components Matrix: Use it for data reduction (e.g., reducing the number of
+features). Loadings Matrix: Use it to understand how the original features contribute
+to each principal component and to interpret the meaning of the principal components
+in terms of the original features. It also helps in reconstructing or approximating
+the original data from the principal components.
+
+Note: original_data ≈ principal_components × loadings_transposed
+"""
+# principal components:
+principal_components = pca.transform(df_01.T)
+pd.DataFrame(principal_components)
+assert principal_components.shape == (4, 4)
+pd.DataFrame(np.corrcoef(principal_components, rowvar=False))  # PCs are orthogonal
+
+# loadings:
+loadings = pca_01.named_steps["pca"].components_
+assert loadings.shape == (4, 9)
+pd.DataFrame(np.corrcoef(loadings))  # loadings are not expected to be orthogonal
 
 
+# todo: continue from here:
 # Using tf-idf features:
 pca = PCA(random_state=seed)
 pca_02 = pca.fit(df_02.T)
