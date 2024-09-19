@@ -96,19 +96,24 @@ loadings = pca_01.named_steps["pca"].components_
 assert loadings.shape == (4, 9)
 pd.DataFrame(np.corrcoef(loadings))  # loadings are not expected to be orthogonal
 
+print(df_01.T)
+print(pd.DataFrame(principal_components))
 
-# todo: continue from here:
+
 # Using tf-idf features:
-pca = PCA(random_state=seed)
 pca_02 = pca.fit(df_02.T)
+pca_02.named_steps["pca"].explained_variance_
 
-pca_02.components_
-assert pca_02.components_.shape == (4, 9)
-pca_02.explained_variance_
+# principal components:
+principal_components_02 = pca.transform(df_02.T)
+pd.DataFrame(principal_components_02)
+assert principal_components_02.shape == (4, 4)
+pd.DataFrame(np.corrcoef(principal_components_02, rowvar=False))  # PCs are orthogonal
 
-df_02_pca = pd.DataFrame(
-    pca_02.components_, index=tail_ids  # , columns=vectorizer_02.get_feature_names()
-).T
+# loadings:
+loadings_02 = pca_02.named_steps["pca"].components_
+assert loadings_02.shape == (4, 9)
+pd.DataFrame(np.corrcoef(loadings_02))  # loadings are not expected to be orthogonal
 
-print(df_02)
-print(df_02_pca)
+print(df_02.T)
+print(pd.DataFrame(principal_components_02))
