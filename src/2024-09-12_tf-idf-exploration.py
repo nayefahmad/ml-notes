@@ -8,6 +8,7 @@ References:
 """
 import numpy as np
 import pandas as pd
+import plotly.graph_objects as go
 from sklearn.decomposition import PCA
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.pipeline import Pipeline
@@ -87,7 +88,7 @@ Note: original_data ≈ principal_components × loadings_transposed
 """
 # principal components:
 principal_components = pca.transform(df_01.T)
-pd.DataFrame(principal_components)
+df_pc = pd.DataFrame(principal_components, index=tail_ids)
 assert principal_components.shape == (4, 4)
 pd.DataFrame(np.corrcoef(principal_components, rowvar=False))  # PCs are orthogonal
 
@@ -97,8 +98,12 @@ assert loadings.shape == (4, 9)
 pd.DataFrame(np.corrcoef(loadings))  # loadings are not expected to be orthogonal
 
 print(df_01.T)
-print(pd.DataFrame(principal_components))
+print(df_pc)
 
+fig = go.Figure(
+    data=go.Scatter(x=df_pc[0], y=df_pc[1], text=df_pc.index, mode='markers')
+)
+fig.show()
 
 # Using tf-idf features:
 pca_02 = pca.fit(df_02.T)
