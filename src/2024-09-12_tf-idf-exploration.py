@@ -101,7 +101,7 @@ print(df_01.T)
 print(df_pc)
 
 fig = go.Figure(
-    data=go.Scatter(x=df_pc[0], y=df_pc[1], text=df_pc.index, mode='markers')
+    data=go.Scatter(x=df_pc[0], y=df_pc[1], text=df_pc.index, mode="markers")
 )
 fig.show()
 
