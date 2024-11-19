@@ -3,8 +3,8 @@ from sklearn.datasets import make_regression
 from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
-from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import train_test_split
+from sklearn.neural_network import MLPRegressor
 
 # Generate synthetic data
 X, y = make_regression(n_samples=1000, n_features=10, noise=0.1, random_state=42)
