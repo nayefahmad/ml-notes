@@ -29,6 +29,8 @@ test_predictions = np.zeros((X_test.shape[0], len(base_models)))
 
 for i, model in enumerate(base_models):
     model.fit(X_train, y_train)  # Train each base model on the training data
+
+    # todo: retrain on train + val before predicting on test
     val_predictions[:, i] = model.predict(X_val)  # Predict on the validation data
     test_predictions[:, i] = model.predict(X_test)  # Predict on the test data
 
