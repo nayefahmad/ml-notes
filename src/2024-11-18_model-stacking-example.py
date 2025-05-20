@@ -6,6 +6,8 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPRegressor
 
+print('test')
+
 # Generate synthetic data
 X, y = make_regression(n_samples=1000, n_features=10, noise=0.1, random_state=42)
 
