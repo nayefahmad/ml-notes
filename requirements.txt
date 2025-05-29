@@ -98,3 +98,10 @@ wcwidth==0.2.5
 webencodings==0.5.1
 widgetsnbextension==3.6.6
 zipp==3.6.0
+
+plotly~=5.18.0
+pip~=21.3.1
+setuptools~=59.6.0
+patsy~=0.5.6
+tenacity~=8.2.2
+statsmodels~=0.12.2
