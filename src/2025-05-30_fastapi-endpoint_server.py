@@ -3,13 +3,51 @@
 
 Reference: https://blog.jetbrains.com/pycharm/2024/09/how-to-use-fastapi-for-machine-learning/#what-is-fastapi  # noqa
 """
-
+from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Optional
 
+import pandas as pd
 import uvicorn
 from fastapi import FastAPI
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
-app = FastAPI()
+ml_models = {}
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    df = pd.read_csv(Path(__file__).parents[1].joinpath("data", "penguins.csv"))
+    df = df.dropna()
+
+    le = LabelEncoder()
+    le.fit(df["species"])
+    y = le.transform(df["species"])
+
+    X = df[["bill_length_mm", "flipper_length_mm"]]
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, stratify=y, random_state=42
+    )
+
+    clf = Pipeline(
+        steps=[("scaler", StandardScaler()), ("knn", KNeighborsClassifier())]
+    )
+
+    clf.fit(X_train, y_train)
+
+    ml_models["clf"] = clf
+    ml_models["le"] = le
+
+    yield
+
+    ml_models.clear()
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/")

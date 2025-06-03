@@ -100,8 +100,8 @@ widgetsnbextension==3.6.6
 zipp==3.6.0
 
 plotly~=5.18.0
-pip~=21.3.1
-setuptools~=59.6.0
+pip~=24.0
+setuptools~=70.0.0
 patsy~=0.5.6
 tenacity~=8.2.2
 statsmodels~=0.12.2
@@ -115,3 +115,4 @@ asgiref~=3.4.1
 starlette~=0.19.1
 idna~=3.10
 immutables~=0.19
+wheel~=0.43.0
