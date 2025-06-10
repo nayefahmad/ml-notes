@@ -20,6 +20,11 @@ ml_models = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """
+    set up our model with FastAPI lifespan events. The advantage of doing that is we
+    can make sure no request will be accepted while the model is still being set up
+    and the memory used will be cleaned up afterward.
+    """
     df = pd.read_csv(Path(__file__).parents[1].joinpath("data", "penguins.csv"))
     df = df.dropna()
 
