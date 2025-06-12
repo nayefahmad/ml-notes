@@ -3,7 +3,6 @@
 
 Reference: https://blog.jetbrains.com/pycharm/2024/09/how-to-use-fastapi-for-machine-learning/#what-is-fastapi  # noqa
 """
-from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Optional
 
@@ -15,49 +14,46 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 
-ml_models = {}
+app = FastAPI()
 
+data_dir = Path(__file__).parents[1]
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """
-    set up our model with FastAPI lifespan events. The advantage of doing that is we
-    can make sure no request will be accepted while the model is still being set up
-    and the memory used will be cleaned up afterward.
-    """
-    df = pd.read_csv(Path(__file__).parents[1].joinpath("data", "penguins.csv"))
-    df = df.dropna()
+data = pd.read_csv(data_dir.joinpath("data/penguins.csv"))
+data = data.dropna()
 
-    le = LabelEncoder()
-    le.fit(df["species"])
-    y = le.transform(df["species"])
-
-    X = df[["bill_length_mm", "flipper_length_mm"]]
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, stratify=y, random_state=42
-    )
-
-    clf = Pipeline(
-        steps=[("scaler", StandardScaler()), ("knn", KNeighborsClassifier())]
-    )
-
-    clf.fit(X_train, y_train)
-
-    ml_models["clf"] = clf
-    ml_models["le"] = le
-
-    yield
-
-    ml_models.clear()
-
-
-app = FastAPI(lifespan=lifespan)
+le = LabelEncoder()
+X = data[["bill_length_mm", "flipper_length_mm"]]
+le.fit(data["species"])
+y = le.transform(data["species"])
+X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, random_state=0)
+clf = Pipeline(
+    steps=[("scaler", StandardScaler()), ("knn", KNeighborsClassifier(n_neighbors=11))]
+)
+clf.fit(X_train, y_train)
 
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {
+        "name": "Penguins",
+        "description": "Penguins prediction API",
+    }
+
+
+@app.get("/predict")
+async def predict(bill_length_mm: float = 0.0, flipper_length_mm: float = 0.0):
+    param = {
+        "bill_length_mm": bill_length_mm,
+        "flipper_length_mm": flipper_length_mm,
+    }
+    if bill_length_mm <= 0.0 or flipper_length_mm <= 0.0:
+        return {"parameters": param, "error_msg": "Invalid input values"}
+    else:
+        result = clf.predict([[bill_length_mm, flipper_length_mm]])
+        return {
+            "parameters": param,
+            "prediction": le.inverse_transform(result)[0],
+        }
 
 
 @app.get("/hello/{name}")

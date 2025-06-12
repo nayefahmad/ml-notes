@@ -20,3 +20,10 @@ Accept: application/json
 
 GET http://127.0.0.1:8000/hello_optional_name?name=Nayef
 Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/predict?bill_length_mm=106&flipper_length_mm=206
+Accept: application/json
+
+###

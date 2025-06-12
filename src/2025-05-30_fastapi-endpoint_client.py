@@ -18,6 +18,15 @@ def call_hello_optional_name(name: Optional[str] = None):
     return response.json()
 
 
+def predict_client(bill_length_mm: float = 0.0, flipper_length_mm: float = 0.0):
+    response = requests.get(
+        f"{base_url}/predict"
+        f"?bill_length_mm={bill_length_mm}&flipper_length_mm={flipper_length_mm}"
+    )
+    return response.json()
+
+
 if __name__ == "__main__":
     call_hello_optional_name()
     call_hello_optional_name("Nayef")
+    predict_client(10.0, 11.2)
