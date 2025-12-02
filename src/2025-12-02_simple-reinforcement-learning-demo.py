@@ -2,6 +2,7 @@
 import numpy as np
 import random
 
+
 class FAKEnv:
     """
     Single-tail, single-part environment for FAK decisions.
@@ -10,8 +11,16 @@ class FAKEnv:
     Reward: negative costs per leg and failure outcomes
     """
 
-    def __init__(self, failure_probs, has_spares, init_inventory,
-                 c_carry=5.0, c_repair=50.0, c_aog=1000.0, seed=42):
+    def __init__(
+        self,
+        failure_probs,
+        has_spares,
+        init_inventory,
+        c_carry=5.0,
+        c_repair=50.0,
+        c_aog=1000.0,
+        seed=42,
+    ):
         """
         failure_probs: list of length N, probability of failure on each leg
         has_spares: list of length N, bool or 0/1 for local spares availability at destination
@@ -43,7 +52,7 @@ class FAKEnv:
         Returns: next_state, reward, done, info
         """
         # Validate action (can't carry if no inventory)
-        can_carry = (self.inventory > 0)
+        can_carry = self.inventory > 0
         a = int(action)
         if a == 1 and not can_carry:
             a = 0  # override
@@ -54,7 +63,7 @@ class FAKEnv:
             reward -= self.c_carry
 
         # Simulate failure
-        fail = (self.rng.random() < self.failure_probs[self.leg])
+        fail = self.rng.random() < self.failure_probs[self.leg]
 
         if fail:
             if a == 1:
@@ -72,7 +81,7 @@ class FAKEnv:
 
         # Advance leg
         self.leg += 1
-        done = (self.leg >= self.N)
+        done = self.leg >= self.N
         next_state = (self.leg, self.inventory)
         return next_state, reward, done, {"fail": fail, "carried": (a == 1)}
 
@@ -84,7 +93,16 @@ class FAKEnv:
         return 2  # 0 or 1
 
 
-def q_learning(env, episodes=5000, alpha=0.2, gamma=0.95, eps_start=1.0, eps_end=0.05, eps_decay=0.9995, seed=7):
+def q_learning(
+    env,
+    episodes=5000,
+    alpha=0.2,
+    gamma=0.95,
+    eps_start=1.0,
+    eps_end=0.05,
+    eps_decay=0.9995,
+    seed=7,
+):
     rng = random.Random(seed)
     S_leg, S_inv = env.state_space()
     A = env.action_space()
@@ -163,19 +181,29 @@ if __name__ == "__main__":
     # Example data
     # 8 legs; remote legs are at indices where has_spares=0
     failure_probs = [0.02, 0.03, 0.05, 0.20, 0.04, 0.01, 0.15, 0.03]
-    has_spares =     [1,    1,    0,    0,    1,    1,    0,    1]
+    has_spares = [1, 1, 0, 0, 1, 1, 0, 1]
     init_inventory = 2
 
     # Costs
-    c_carry = 5.0      # carrying penalty per leg
-    c_repair = 50.0    # repair cost when failure is handled
-    c_aog = 1000.0     # very large cost when failure cannot be handled (AOG)
+    c_carry = 5.0  # carrying penalty per leg
+    c_repair = 50.0  # repair cost when failure is handled
+    c_aog = 1000.0  # very large cost when failure cannot be handled (AOG)
 
-    env = FAKEnv(failure_probs, has_spares, init_inventory, c_carry, c_repair, c_aog, seed=123)
+    env = FAKEnv(
+        failure_probs, has_spares, init_inventory, c_carry, c_repair, c_aog, seed=123
+    )
 
     # Train Q-learning
-    Q, rewards = q_learning(env, episodes=8000, alpha=0.25, gamma=0.95,
-                            eps_start=1.0, eps_end=0.05, eps_decay=0.999, seed=42)
+    Q, rewards = q_learning(
+        env,
+        episodes=8000,
+        alpha=0.25,
+        gamma=0.95,
+        eps_start=1.0,
+        eps_end=0.05,
+        eps_decay=0.999,
+        seed=42,
+    )
 
     policy = derive_policy(Q)
     avg_cost = simulate_policy(env, policy, runs=2000)
