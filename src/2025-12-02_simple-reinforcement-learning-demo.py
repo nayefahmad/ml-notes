@@ -129,7 +129,7 @@ def q_learning(
     S_leg, S_inv = env.state_space()
     A = env.action_space()
 
-    Q = np.zeros((S_leg, S_inv, A), dtype=float)
+    Q_state_action_table = np.zeros((S_leg, S_inv, A), dtype=float)
 
     eps = eps_start
     rewards_history = []
@@ -146,17 +146,18 @@ def q_learning(
             if rng.random() < eps:
                 action = rng.randrange(A)
             else:
-                action = int(np.argmax(Q[leg, inv, :]))
+                action = int(np.argmax(Q_state_action_table[leg, inv, :]))
 
             next_state, reward, done, info = env.step(action)
             total_reward += reward
 
             # Q-update
+            # This is equation 19.15 in the Simon Prince book, p384
             nleg, ninv = next_state
-            best_next = 0.0 if done else np.max(Q[nleg, ninv, :])
+            best_next = 0.0 if done else np.max(Q_state_action_table[nleg, ninv, :])
             td_target = reward + gamma * best_next
-            td_error = td_target - Q[leg, inv, action]
-            Q[leg, inv, action] += alpha * td_error
+            td_error = td_target - Q_state_action_table[leg, inv, action]
+            Q_state_action_table[leg, inv, action] += alpha * td_error
 
             state = next_state
 
@@ -164,22 +165,22 @@ def q_learning(
         eps = max(eps_end, eps * eps_decay)
         rewards_history.append(total_reward)
 
-    return Q, rewards_history
+    return Q_state_action_table, rewards_history
 
 
-def derive_policy_from_Q(Q):
+def derive_policy_from_Q(Q_state_action_table):
     """
     Convert Q-table to a deterministic policy function:
     policy(state, env) -> action in {0,1}
     """
-    S_leg, S_inv, A = Q.shape
+    S_leg, S_inv, A = Q_state_action_table.shape
 
     def policy_fn(state, env=None):
         leg, inv = state
         # Clamp to table bounds (useful if someone passes terminal state)
         leg = min(max(leg, 0), S_leg - 1)
         inv = min(max(inv, 0), S_inv - 1)
-        return int(np.argmax(Q[leg, inv, :]))
+        return int(np.argmax(Q_state_action_table[leg, inv, :]))
 
     return policy_fn
 
@@ -282,7 +283,7 @@ if __name__ == "__main__":
     )
 
     # Train Q-learning
-    Q, rewards = q_learning(
+    Q_trained, rewards = q_learning(
         env,
         episodes=8000,
         alpha=0.25,
@@ -293,8 +294,8 @@ if __name__ == "__main__":
         seed=42,
     )
 
-    # Derive deterministic policy from Q
-    learned_policy = derive_policy_from_Q(Q)
+    # Derive deterministic policy from Q_trained
+    learned_policy = derive_policy_from_Q(Q_trained)
 
     # Evaluate learned policy
     learned_metrics = evaluate_policy(env, learned_policy, runs=4000, seed=999)
